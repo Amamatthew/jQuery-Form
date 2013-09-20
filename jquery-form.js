@@ -28,39 +28,27 @@
 	* 
 	*/
 	function save(ctx) {
-		var elems = $("input, select, textarea", ctx);
-		var result = "{";
+		var form = {};
+		var elems = $("input:text, select, textarea, input:radio:checked, input:checkbox:checked", ctx);
 		
 		var firstElement = true;		
 		elems.each(function(i, value) {
 			var elem = $(this);
 		
 			var name = elem.attr("name");
-	
 
 			if(name) {
-				if (value == "") {
-					return; //parseUndefined option?
-
-				}
-			
-				if (firstElement) {
-					firstElement = false;
-
+				var val = $(elem).val();
+				
+				if(val) {
+					form[elem.attr("name")] = val;
 				} else {
-					result += ",";
-
+					return;
 				}
-
-				var str = '"' + elem.attr("name") + '" : "' + $(value).val() + '"';
-				result += str;
-
 			}
-
 		});
 		
-		result += "}";
-		return $.parseJSON(result);
+		return form;
 
 	};
 	
@@ -77,7 +65,6 @@
 	function load(ctx, json) {
 		$.each(json, function(key, value) {
 			$('input[name="' + key + '"], select[name="' + key + '"], textarea[name="' + key + '"]', ctx).val(value);
-
 		});
 
 	}
